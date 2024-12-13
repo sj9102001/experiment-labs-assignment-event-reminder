@@ -88,11 +88,13 @@ const fun = async () => {
 
                 }
             } else {
+                return 0;
             }
         }
         return count;
     } catch (error) {
         console.error("Error processing cron job:", error);
+        return 0;
     }
 };
 
