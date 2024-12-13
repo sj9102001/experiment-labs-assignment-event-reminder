@@ -38,7 +38,7 @@ const sendEmail = async (to, subject, text) => {
 
 const fun = async () => {
     console.log("Running cron job...");
-
+    let count = 0;
     try {
         // Step 1: Get all users
         const usersSnapshot = await getDocs(collection(db, "users"));
@@ -79,7 +79,7 @@ const fun = async () => {
                             `Reminder for Event: ${eventData.title}`,
                             `Your event "${eventData.title}" is scheduled to start at ${eventTime.getMonth() + 1}/${eventTime.getDate()}/${eventTime.getFullYear()} ${eventTime.getHours()}:${eventTime.getMinutes().toString().padStart(2, '0')}.`
                         );
-
+                        count++;
                         // Step 5: Update isSentReminder to true
                         const eventRef = doc(db, `users/${userDoc.id}/events`, eventDoc.id);
                         await updateDoc(eventRef, { isReminderSent: true });
@@ -89,6 +89,7 @@ const fun = async () => {
                 }
             } else {
             }
+            return count;
         }
     } catch (error) {
         console.error("Error processing cron job:", error);
@@ -97,8 +98,11 @@ const fun = async () => {
 
 
 
-app.get("/", (req, res) => {
-    fun();
+app.get("/", async (req, res) => {
+    const result = await fun();
+    res.send({
+        message: `Sent Reminders To ${result}`
+    })
 });
 
 // Start Express server
