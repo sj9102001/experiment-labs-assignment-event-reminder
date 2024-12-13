@@ -96,10 +96,9 @@ const fun = async () => {
 };
 
 
-cron.schedule("*/10 * * * *", fun);
 
 app.get("/", (req, res) => {
-    res.send("Email reminder service is running...");
+    fun();
 });
 
 // Start Express server
